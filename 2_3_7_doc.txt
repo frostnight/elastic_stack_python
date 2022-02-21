@@ -1,0 +1,53 @@
+PUT _index_template/test_template
+{
+  "index_patterns": ["test_*"],
+  "priority": 1,
+  "template": {
+    "settings": {
+      "number_of_shards":3,
+      "number_of_replicas":1
+    },
+    "mappings": {
+      "properties": {
+        "name": {"type": "text"},
+        "age": {"type": "short"},
+        "gender": {"type":"keyword"}
+      }
+    }
+  }
+}
+
+PUT test_index1/_doc/1
+{
+  "name": "kim",
+  "age": 10,
+  "gender": "male"
+}
+
+PUT _index_template/multi_template1
+{
+  "index_patterns": "multi_*",
+  "priority": 1,
+  "template": {
+    "mappings": {
+      "properties": {
+        "age": {"type": "integer"},
+        "name": {"type": "text"}
+      }
+    }
+  }
+}
+
+PUT _index_template/multi_template2
+{
+  "index_patterns": "multi_data_*",
+  "priority": 2,
+  "template": {
+    "mappings": {
+      "properties": {
+        "name": {"type": "keyword"}
+      }
+    }
+  }
+}
+

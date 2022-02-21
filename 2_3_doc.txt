@@ -1,0 +1,116 @@
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "create" : { "_index" : "test", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : { "_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+
+POST _bulk
+{"index": {"_index": "index2", "_id": "4"}}
+{"name":"park", "age": 30, "gender": "female"}
+{"index": {"_index": "index2", "_id": "5"}}
+{"name":"jung", "age": 50, "gender": "male"}
+
+PUT index3
+{
+  "mappings": {
+    "properties": {
+      "age" : {"type": "short"},
+      "name" : {"type": "text"},
+      "gender": {"type": "keyword"}
+    }
+  }
+}
+
+PUT text_index
+{
+  "mappings": {
+    "properties": {
+      "contents": { "type": "text"}
+    }
+  }
+}
+
+PUT text_index/_doc/1
+{
+  "contents": "beautiful day"
+}
+
+PUT keyword_index
+{
+  "mappings": {
+    "properties": {
+      "contents": {
+        "type" : "keyword"
+      }
+    }
+  }
+}
+
+PUT keyword_index/_doc/1
+{
+  "contents": "beautiful day"
+}
+
+GET text_index/_search
+{
+  "query": {
+    "match": {
+      "contents": "day"
+    }
+  }
+}
+
+GET keyword_index/_search
+{
+  "query": {
+    "match": {
+      "contents": "beautiful"
+    }
+  }
+}
+curl -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@./bulk_index2"
+
+PUT multifield_index
+{
+  "mappings": {
+    "properties": {
+      "message": { "type" : "text" },
+      "contents": {
+        "type": "text",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      }
+    }
+  }
+}
+
+PUT multifield_index/_doc/1
+{
+  "message": "1 document",
+  "contents": "beautiful day"
+}
+
+PUT multifield_index/_doc/2
+{
+  "message": "2 document",
+  "contents": "beautiful day"
+}
+
+PUT multifield_index/_doc/3
+{
+  "message": "3 document",
+  "contents": "wonderful day"
+}
+
+GET multifield_index/_search
+{
+  "query": {
+    "match": {
+      "contents": "day"
+    }
+  }
+}
